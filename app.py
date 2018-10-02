@@ -4,45 +4,86 @@ app = Flask(__name__)
 api = Api(app)
 
 from datetime import datetime, date
+import json
+
 todos = {
 
-    1: {'title': 'do something',
-        'creation_date': '',
-        'last_updated_date': '',
-        'due_date': '',
-        'completed': '',
-        'completion_date': '' },
-    2: {'title': 'something else',
-        'creation_date': '',
-        'last_updated_date': '',
-        'due_date': '',
-        'completed': '',
-        'completion_date': '' },
+    1: {
+        "title":"do somethin",
+        "creation_date": "2018-10-02 15:07:08.183240",
+        "last_updated_date": "2018-10-02 15:07:08.183240",
+        "due_date": "12-2-2018",
+        "completed": False,
+        "completion_date": "incomplete"
+    },
+
+    2: {
+        "title":"todo number 2",
+        "creation_date": "2018-10-02 15:07:08.183240",
+        "last_updated_date": "2018-10-02 15:07:08.183240",
+        "due_date": "1-2-2019",
+        "completed": False,
+        "completion_date": "incomplete"
+    },
 }
+
+class TodoListResource(Resource):
+
+    def get(self):
+        return todos
+
+    def post(self):
+        data = request.get_json()
+        timestamp = datetime.now()
+        
+        new_todo = {
+            "title": data["title"],
+            "creation_date": str(timestamp),
+            "last_updated_date": str(timestamp),
+            "due_date": data["due_date"],
+            "completed": data["completed"],
+            "completion_date": "incomplete"
+            }
+        new_index = len(todos) + 1
+        todos[new_index] = new_todo
+
+        name = todos.get("title", data["title"])
+        return {'message': 'Added item to the list, id: %s, name: %s' % (new_index, name)}
 
 class TodoResource(Resource):
     
-    def __init__(self):
-        self.name = request.name
-        self.timestamp = datetime.now()
-        self.due_date = request.due_date
-        self.completed = request.completed
-        self.completion_date = request.completion_date
-        
     def get(self, todo_id):
-        timestamp = self.timestamp
-        return {'message': 'Get an item id: %s' % (todo_id)}
+        if int(todo_id) in todos:
+            return todos[int(todo_id)]
+        else:
+            return "Item not in list"
 
     def put(self, todo_id):
-        data = request.get_json()
-        timestamp = self.timestamp
-        name = data.get('name', None)
-        return {'message': 'Update an item id: %s, name: %s' % (id, name)}
+        if int(todo_id) in todos:
+            data = request.get_json()
+            timestamp = datetime.now()
+            todo = todos[int(todo_id)]
+            todo["title"] = data["title"]
+            todo["due_date"] = data["due_date"]
+            todo["completed"] = data["completed"]
+            todo["last_updated_date"] = str(timestamp)
+            if todo["completed"] == True:
+                todo["completion_date"] = str(timestamp)
+            else:
+                todo["completion_date"] = "incomplete"
+            return todo
+        else:
+            return "Nothing to update"
 
     def delete(self, todo_id):
-        return {'message': 'Delete an item id: %s' % (id)}
+        if int(todo_id) in todos:
+            del todos[int(todo_id)]
+            return {'message': 'Delete an item id: %s' % (todo_id)}
+        else:
+            return "Nothing to delete"
 
 api.add_resource(TodoResource, '/todo/<todo_id>')
+api.add_resource(TodoListResource, '/todos')
 
 if __name__ == '__main__':
      app.run(debug=True)
