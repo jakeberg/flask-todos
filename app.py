@@ -5,6 +5,17 @@ api = Api(app)
 
 from datetime import datetime, date
 import json
+import logging
+
+# Builds custom logger
+LOGFILE = "./todos.log"
+logger = logging.getLogger(__name__)
+formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(filename)s : %(message)s')
+r_logger = RotatingFileHandler(LOGFILE, mode='a', maxBytes=5*1024*1024, 
+                                 backupCount=2, encoding=None, delay=0)
+r_logger.setFormatter(formatter)
+logger.addHandler(r_logger)
+logger.setLevel(logging.INFO)
 
 todos = {
 
@@ -30,7 +41,14 @@ todos = {
 class TodoListResource(Resource):
 
     def get(self):
-        return todos
+        logger.info("User ")
+        try:
+            logger.info("User accessed all todos")
+            return todos
+        except:
+            logger.error("User accessed all todos")
+            return "Something happened and request was not made..."
+
 
     def post(self):
         data = request.get_json()
