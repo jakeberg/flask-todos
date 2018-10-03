@@ -28,7 +28,7 @@ http://127.0.0.1:5000/todos
 http://127.0.0.1:5000/todo/2
 
 ---
-* Post todo(POST):
+#### * Post todo(POST):
 
 http://127.0.0.1:5000/todos
 
