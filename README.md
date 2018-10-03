@@ -37,7 +37,7 @@ http://127.0.0.1:5000/todos
 ```
 
 {
-	"title": "new todo",
+"title": "new todo",
     "due_date": "2/7/2019",
     "completed": false
 }
@@ -59,7 +59,7 @@ http://127.0.0.1:5000/todo/2
 ```
 
 {
-	"title": "update",
+"title": "update",
     "due_date": "2/8/2019",
     "completed": true
 }
