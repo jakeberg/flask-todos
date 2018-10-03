@@ -1,22 +1,22 @@
-## Flask Todo-App
+# Flask Todo-App
 
-### How to use this app:
+## How to use this app:
 
 
-1. Start virtual environment:
+### 1. Start virtual environment:
 
 ```python
 pipenv shell
 ```
 
-2. Run flask app:
+### 2. Run flask app:
 ```python
 FLASK_APP=app.py flask run
 ```
 
-3. Run your REST client(like Postman):
+### 3. Run your REST client(like Postman):
 
-4. You can run these commands at the endpoints provided.
+### 4. You can run these commands at the endpoints provided
 
 #### Get all todos(GET):
 
