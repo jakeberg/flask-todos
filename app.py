@@ -1,11 +1,12 @@
 from flask import Flask, request
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 app = Flask(__name__)
 api = Api(app)
 
 from datetime import datetime, date
 import json
 import logging
+from logging.handlers import RotatingFileHandler
 
 # Builds custom logger
 LOGFILE = "./todos.log"
@@ -38,6 +39,11 @@ todos = {
     },
 }
 
+parser = reqparse.RequestParser()
+parser.add_argument('title')
+parser.add_argument('due_date')
+parser.add_argument('completed')
+
 class TodoListResource(Resource):
 
     def get(self):
@@ -51,21 +57,21 @@ class TodoListResource(Resource):
 
 
     def post(self):
-        data = request.get_json()
         timestamp = datetime.now()
-        
+        args = parser.parse_args()
+
         new_todo = {
-            "title": data["title"],
+            "title": args["title"],
             "creation_date": str(timestamp),
             "last_updated_date": str(timestamp),
-            "due_date": data["due_date"],
-            "completed": data["completed"],
+            "due_date": args["due_date"],
+            "completed": args["completed"],
             "completion_date": "incomplete"
             }
+
         new_index = len(todos) + 1
         todos[new_index] = new_todo
-
-        name = todos.get("title", data["title"])
+        name = todos.get("title", args["title"])
         return {'message': 'Added item to the list, id: %s, name: %s' % (new_index, name)}
 
 class TodoResource(Resource):
@@ -78,18 +84,20 @@ class TodoResource(Resource):
 
     def put(self, todo_id):
         if int(todo_id) in todos:
-            data = request.get_json()
+            args = parser.parse_args()
             timestamp = datetime.now()
             todo = todos[int(todo_id)]
-            todo["title"] = data["title"]
-            todo["due_date"] = data["due_date"]
-            todo["completed"] = data["completed"]
+            todo["title"] = args["title"]
+            todo["due_date"] = args["due_date"]
+            todo["completed"] = args["completed"]
             todo["last_updated_date"] = str(timestamp)
+
             if todo["completed"] == True:
                 todo["completion_date"] = str(timestamp)
             else:
                 todo["completion_date"] = "incomplete"
             return todo
+
         else:
             return "Nothing to update"
 
