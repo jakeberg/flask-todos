@@ -20,16 +20,16 @@ FLASK_APP=app.py flask run
 
 ⋅⋅* Get all todos(GET):
 
-⋅⋅⋅http://127.0.0.1:5000/todos
+⋅⋅⋅ http://127.0.0.1:5000/todos
 
 
 ⋅⋅* Get one todo(GET):
 
-⋅⋅⋅http://127.0.0.1:5000/todo/2
+⋅⋅⋅ http://127.0.0.1:5000/todo/2
 
 ⋅⋅* Post todo(POST):
 
-⋅⋅⋅http://127.0.0.1:5000/todos
+⋅⋅⋅ http://127.0.0.1:5000/todos
 
 ⋅⋅⋅(send json in header)
 
@@ -45,11 +45,11 @@ FLASK_APP=app.py flask run
 
 ⋅⋅* Delete todo (DELETE):
 
-⋅⋅⋅http://127.0.0.1:5000/todo/2
+⋅⋅⋅ http://127.0.0.1:5000/todo/2
 
 ⋅⋅* Update todo(UPDATE):
 
-⋅⋅⋅http://127.0.0.1:5000/todo/2
+⋅⋅⋅ http://127.0.0.1:5000/todo/2
 
 (send json in header)
 

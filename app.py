@@ -72,7 +72,9 @@ class TodoListResource(Resource):
         new_index = len(todos) + 1
         todos[new_index] = new_todo
         name = todos.get("title", args["title"])
-        return {'message': 'Added item to the list, id: %s, name: %s' % (new_index, name)}
+        return {
+            'message': 'Added item to the list, id: %s, name: %s' % (new_index, name)
+            }
 
 class TodoResource(Resource):
     
