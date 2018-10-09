@@ -11,7 +11,7 @@ pipenv shell
 
 ### 2. Run flask app:
 ```python
-FLASK_APP=app.py flask run
+FLASK_APP=todo_app.py flask run
 ```
 
 ### 3. Run your REST client(like Postman):

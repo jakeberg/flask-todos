@@ -1,14 +1,12 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-
-from create_app import app, api
+from flask_todos.create_app import app, api
 from datetime import datetime, date
 import json
 import logging
 from logging.handlers import RotatingFileHandler
 from unittest.mock import MagicMock
-
-from todos import todos
+from flask_todos.todos import todos
 
 # Builds custom logger
 LOGFILE = "./todos.log"
@@ -40,23 +38,22 @@ class TodoListResource(Resource):
         """
         Abstracted logic for testing purposes
         """
-        return todos_list_get()
+        return todo_list_get()
 
     def post(self):
         """
         Abstracted logic for testing purposes
         """
         args = parser.parse_args()
-        return todos_list_post(args)
+        return todo_list_post(args)
 
 
 def todo_list_get():
-    logger.info("User ")
     try:
         logger.info("User accessed all todos")
         return todos
     except:
-        logger.error("User accessed all todos")
+        logger.error("User error at todo_list_get()")
         return "Something happened and request was not made..." \
             "-- todo_list_get()"
 
@@ -75,12 +72,14 @@ def todo_list_post(args):
     todos[new_index] = new_todo
     name = todos.get("title", args["title"])
     if name:
+        logger.info("User posted to todos")
         return {
             "message":
             "Added item to the list, id: %s, name: %s" % (new_index, name),
             "name": name
             }
     else:
+        logger.warning("User error at todo_list_post()")
         return "Something went wrong. -- todo_list_parse()"
 
 
@@ -108,8 +107,10 @@ class TodoResource(Resource):
 
 def todo_get(todo_id):
     if int(todo_id) in todos:
+        logger.info("User got one todo: id %s" % (todo_id))
         return todos[int(todo_id)]
     else:
+        logger.warning("User error at todo_get()")
         return "Item not in list. -- todo_get()"
 
 
@@ -125,16 +126,20 @@ def todo_put(todo_id, args):
             todo["completion_date"] = str(timestamp)
         else:
             todo["completion_date"] = "incomplete"
+        logger.info("User updated a todo: id %s" % (todo_id))
         return todo
     else:
+        logger.warning("User error at todo_put()")
         return "Nothing to update. -- todo_put()"
 
 
 def todo_delete(todo_id):
     if int(todo_id) in todos:
         del todos[int(todo_id)]
+        logger.info("User deleted a todo: id %s" % (todo_id))
         return {'message': 'Delete an item id: %s' % (todo_id)}
     else:
+        logger.warning("User error at todo_delete()")
         return "Nothing to delete. -- todo_delete()"
 
 
