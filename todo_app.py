@@ -1,8 +1,7 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-app = Flask(__name__)
-api = Api(app)
 
+from create_app import app, api
 from datetime import datetime, date
 import json
 import logging
@@ -14,9 +13,16 @@ from todos import todos
 # Builds custom logger
 LOGFILE = "./todos.log"
 logger = logging.getLogger(__name__)
-formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(filename)s : %(message)s')
-r_logger = RotatingFileHandler(LOGFILE, mode='a', maxBytes=5*1024*1024, 
-                                 backupCount=2, encoding=None, delay=0)
+formatter = logging.Formatter(
+    '%(asctime)s : %(levelname)s : %(filename)s : %(message)s'
+    )
+r_logger = RotatingFileHandler(
+    LOGFILE, mode='a',
+    maxBytes=5*1024*1024,
+    backupCount=2,
+    encoding=None,
+    delay=0
+    )
 r_logger.setFormatter(formatter)
 logger.addHandler(r_logger)
 logger.setLevel(logging.INFO)
@@ -27,6 +33,7 @@ parser.add_argument('title')
 parser.add_argument('due_date')
 parser.add_argument('completed')
 
+
 class TodoListResource(Resource):
 
     def get(self):
@@ -34,7 +41,6 @@ class TodoListResource(Resource):
         Abstracted logic for testing purposes
         """
         return todos_list_get()
-
 
     def post(self):
         """
@@ -51,7 +57,8 @@ def todo_list_get():
         return todos
     except:
         logger.error("User accessed all todos")
-        return "Something happened and request was not made... -- todo_list_get()"
+        return "Something happened and request was not made..." \
+            "-- todo_list_get()"
 
 
 def todo_list_post(args):
@@ -69,16 +76,16 @@ def todo_list_post(args):
     name = todos.get("title", args["title"])
     if name:
         return {
-            'message': 'Added item to the list, id: %s, name: %s' % (new_index, name)
+            "message":
+            "Added item to the list, id: %s, name: %s" % (new_index, name),
+            "name": name
             }
     else:
         return "Something went wrong. -- todo_list_parse()"
 
-#------------------------------------------------------------------------------------
-
 
 class TodoResource(Resource):
-    
+
     def get(self, todo_id):
         """
         Abstracted logic for testing purposes
@@ -114,7 +121,7 @@ def todo_put(todo_id, args):
         todo["due_date"] = args["due_date"]
         todo["completed"] = args["completed"]
         todo["last_updated_date"] = str(timestamp)
-        if todo["completed"] == True:
+        if todo["completed"] is True:
             todo["completion_date"] = str(timestamp)
         else:
             todo["completion_date"] = "incomplete"
@@ -136,5 +143,4 @@ api.add_resource(TodoListResource, '/todos')
 
 
 if __name__ == '__main__':
-     app.run(debug=True)
-
+    app.run(debug=True)
