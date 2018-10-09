@@ -9,14 +9,14 @@ class TestTodoListCRUD(unittest.TestCase):
         result = app.todo_list_get()
         self.assertEqual(result, todos)
 
-    # def test_todo_list_post(self):
-    #     newTodo = {
-    #     	"title": "new todo",
-    #         "due_date": "2/7/2019",
-    #         "completed": False
-    #     }
-    #     result = app.todo_list_post(newTodo)
-    #     print("asdfasdfasd", result)
+    def test_todo_list_post(self):
+        newTodo = {
+        	"title": "new todo",
+            "due_date": "2/7/2019",
+            "completed": False
+        }
+        result = app.todo_list_post(newTodo)
+        print("asdfasdfasd", result)
 
 
 class TestTodoCRUD(unittest.TestCase):
@@ -52,20 +52,17 @@ class TestTodoCRUD(unittest.TestCase):
         }
 
         result = app.todo_put(1, put_todo)
+        result_seconds = result["last_updated_date"][17:19]
+        
         self.assertEqual(result["title"], updated_todo["title"])
         self.assertEqual(result["due_date"], updated_todo["due_date"])
         self.assertEqual(result["completed"], updated_todo["completed"])
-
-        if result["completion_date"] != "incomplete":
-            pass
-
-        result_seconds = result["last_updated_date"][17:19]
-        if int(NOW) <= int(result_seconds) <= int(AFTER):
-            pass
+        assert result["completion_date"] != "incomplete"
+        assert int(NOW) <= int(result_seconds) <= int(AFTER)
 
     def test_todo_delete(self):
         result = app.todo_delete(2)
-        self.assertEqual(app.todo_get(2), "Item not in list")
+        self.assertEqual(app.todo_get(2), "Item not in list. -- todo_get()")
         
         # Adds todo back into list for other tests
         repair_todo = {

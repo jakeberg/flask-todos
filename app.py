@@ -7,6 +7,7 @@ from datetime import datetime, date
 import json
 import logging
 from logging.handlers import RotatingFileHandler
+from unittest.mock import MagicMock
 
 from todos import todos
 
@@ -20,6 +21,7 @@ r_logger.setFormatter(formatter)
 logger.addHandler(r_logger)
 logger.setLevel(logging.INFO)
 
+# Parser
 parser = reqparse.RequestParser()
 parser.add_argument('title')
 parser.add_argument('due_date')
@@ -28,11 +30,18 @@ parser.add_argument('completed')
 class TodoListResource(Resource):
 
     def get(self):
+        """
+        Abstracted logic for testing purposes
+        """
         return todos_list_get()
 
 
     def post(self):
-        return todos_list_post()
+        """
+        Abstracted logic for testing purposes
+        """
+        args = parser.parse_args()
+        return todos_list_post(args)
 
 
 def todo_list_get():
@@ -42,12 +51,11 @@ def todo_list_get():
         return todos
     except:
         logger.error("User accessed all todos")
-        return "Something happened and request was not made..."
+        return "Something happened and request was not made... -- todo_list_get()"
 
 
-def todo_list_post():
+def todo_list_post(args):
     timestamp = datetime.now()
-    args = parser.parse_args()
     new_todo = {
         "title": args["title"],
         "creation_date": str(timestamp),
@@ -63,6 +71,8 @@ def todo_list_post():
         return {
             'message': 'Added item to the list, id: %s, name: %s' % (new_index, name)
             }
+    else:
+        return "Something went wrong. -- todo_list_parse()"
 
 #------------------------------------------------------------------------------------
 
@@ -70,22 +80,30 @@ def todo_list_post():
 class TodoResource(Resource):
     
     def get(self, todo_id):
+        """
+        Abstracted logic for testing purposes
+        """
         return todo_get(todo_id)
 
     def put(self, todo_id):
+        """
+        Abstracted logic for testing purposes
+        """
         args = parser.parse_args()
         return todo_put(todo_id, args)
 
     def delete(self, todo_id):
+        """
+        Abstracted logic for testing purposes
+        """
         return todo_delete(todo_id)
 
 
-# The functionality of these have been broken out for testing 
 def todo_get(todo_id):
     if int(todo_id) in todos:
         return todos[int(todo_id)]
     else:
-        return "Item not in list"
+        return "Item not in list. -- todo_get()"
 
 
 def todo_put(todo_id, args):
@@ -102,7 +120,7 @@ def todo_put(todo_id, args):
             todo["completion_date"] = "incomplete"
         return todo
     else:
-        return "Nothing to update"
+        return "Nothing to update. -- todo_put()"
 
 
 def todo_delete(todo_id):
@@ -110,11 +128,12 @@ def todo_delete(todo_id):
         del todos[int(todo_id)]
         return {'message': 'Delete an item id: %s' % (todo_id)}
     else:
-        return "Nothing to delete"
+        return "Nothing to delete. -- todo_delete()"
 
 
 api.add_resource(TodoResource, '/todo/<todo_id>')
 api.add_resource(TodoListResource, '/todos')
+
 
 if __name__ == '__main__':
      app.run(debug=True)

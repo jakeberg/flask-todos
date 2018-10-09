@@ -1,5 +1,4 @@
 todos = {
-
     1: {
         "title":"do somethin",
         "creation_date": "2018-10-02 15:07:08.183240",
