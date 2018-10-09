@@ -10,6 +10,8 @@ pylint = "*"
 flask = "*"
 flask-restful = "*"
 datetime = "*"
+pytest = "*"
+flasker = "*"
 
 [requires]
 python_version = "3.7"
