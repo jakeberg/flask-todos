@@ -2,6 +2,9 @@
 
 ## How to use this app:
 
+### Postman collection
+https://documenter.getpostman.com/view/4655429/RWgqUddZ
+
 
 ### 1. Start virtual environment:
 
